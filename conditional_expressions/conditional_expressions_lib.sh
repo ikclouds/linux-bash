@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # conditional_expressions_lib.sh
-# v1.0.0
+# v1.0.1
+# Changes:
+#   cel_is_string_empty bug fixed
 
 # Conditional Expressions Library
 
@@ -13,7 +15,13 @@
 #   declare -F | grep cel
 
 
-declare LIB_NAME
+shopt -s inherit_errexit
+set -eE
+
+declare LIB_NAME    # library name
+declare condition   # conditional expression
+declare arg1        # argument 1 in conditional expression
+declare arg1        # argument 2 in conditional expression
 
 # Exit code for -h,--help option in the Conditional Expression LIBrary
 declare LIB_TEST="conditional_expressions_lib_test.sh"
@@ -48,7 +56,7 @@ function init_cel ()
       -v|--verbose)   args["verbose"]="on" ;;&
       -u|--usage)     args["usage"]="on" ;;&
       -d|--debug)     args["debug"]="on" ;;&
-      -t|--test)      args["test"]="on" ;;
+      -t|--test)      args["test"]="on" ;;&
     esac
   done
 
@@ -80,16 +88,18 @@ function print_help ()
 function test_all_lib ()
 {
   local _continue
+  local _debug="${args["debug"]}"
 
   if [[ "$LIB_NAME" != "-bash" ]]; then
     [[ "$0" != "-bash" ]] && source ./${LIB_TEST}
 
     for func_name in $(grep "function.*()" "$LIB_NAME" | grep -vE "$NON_EXPRESSION_FUNC" | cut -d' ' -f2 | grep -v "^$"); do
-      eval "test_$func_name"
+      [ "$_debug" == "on" ] \
+        && eval "test_$func_name" \
+        || eval "test_$func_name &> /dev/null"
     
       if [ $? = 0 ] ; then echo "test_$func_name ... Ok"; else echo "test_$func_name ... Error"; fi
-      echo "---"
-      read -r -p "Continue (y/n): " _continue
+      [ "$_debug" == "on" ] && { echo "---"; read -r -p "Continue (y/n): " _continue; }
       [ "$_continue" = "n" ] && return
     done
   fi
@@ -113,12 +123,12 @@ function cel_is_file_available ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -a "$_arg1" ]]'
+  condition="[[ -a '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -139,12 +149,12 @@ function cel_is_block_file ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -b "$_arg1" ]]'
+  condition="[[ -b '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -165,12 +175,12 @@ function cel_is_character_file ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -c "$_arg1" ]]'
+  condition="[[ -c '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -191,12 +201,12 @@ function cel_is_directory ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -d "$_arg1" ]]'
+  condition="[[ -d '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -217,12 +227,12 @@ function cel_is_file_exists ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -e "$_arg1" ]]'
+  condition="[[ -e '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -243,12 +253,12 @@ function cel_is_regular_file ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -f "$_arg1" ]]'
+  condition="[[ -f '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -269,12 +279,12 @@ function cel_is_set_group_id ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -g "$_arg1" ]]'
+  condition="[[ -g '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -295,12 +305,12 @@ function cel_is_symbolic_link ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -h "$_arg1" ]]'
+  condition="[[ -h '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -321,12 +331,12 @@ function cel_is_sticky_bit ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -k "$_arg1" ]]'
+  condition="[[ -k '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -347,12 +357,12 @@ function cel_is_named_pipe ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -p "$_arg1" ]]'
+  condition="[[ -p '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -373,12 +383,12 @@ function cel_is_file_readable ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -r "$_arg1" ]]'
+  condition="[[ -r '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -399,12 +409,12 @@ function cel_is_not_empty_file ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -s "$_arg1" ]]'
+  condition="[[ -s '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -425,12 +435,12 @@ function cel_is_fd_terminal ()
     Example:
           ${FUNCNAME[0]} 0
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -t "$_arg1" ]]'
+  condition="[[ -t '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -451,12 +461,12 @@ function cel_is_setuid_file ()
     Example:
           ${FUNCNAME[0]} /bin/bash
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -u "$_arg1" ]]'
+  condition="[[ -u '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -477,12 +487,12 @@ function cel_is_writable_file ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -w "$_arg1" ]]'
+  condition="[[ -w '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -502,12 +512,12 @@ function cel_is_executable_file ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -x "$_arg1" ]]'
+  condition="[[ -x '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -528,12 +538,12 @@ function cel_is_file_owned_by_group ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -G "$_arg1" ]]'
+  condition="[[ -G '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -554,12 +564,12 @@ function cel_is_symlink ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -L "$_arg1" ]]'
+  condition="[[ -L '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -580,12 +590,12 @@ function cel_is_file_modified_since_last_read ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -N "$_arg1" ]]'
+  condition="[[ -N '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -606,12 +616,12 @@ function cel_is_file_owned_by_user ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -O "$_arg1" ]]'
+  condition="[[ -O '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -632,12 +642,12 @@ function cel_is_socket ()
     Example:
           ${FUNCNAME[0]} file_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -S "$_arg1" ]]'
+  condition="[[ -S '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -658,13 +668,13 @@ function cel_are_same_files ()
     Example:
           ${FUNCNAME[0]} file1_name file2_name
   "
-  local _arg1="$1"
-  local _arg2="$2"
+  arg1="$1"
+  arg2="$2"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ "$_arg1" -ef "$_arg2" ]]'
+  condition="[[ '$arg1' -ef '$arg2' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -685,13 +695,13 @@ function cel_is_file_newer ()
     Example:
           ${FUNCNAME[0]} file1_name file2_name
   "
-  local _arg1="$1"
-  local _arg2="$2"
+  arg1="$1"
+  arg2="$2"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ "$_arg1" -nt "$_arg2" ]]'
+  condition="[[ '$arg1' -nt '$arg2' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -712,13 +722,13 @@ function cel_is_file_older ()
     Example:
           ${FUNCNAME[0]} file1_name file2_name
   "
-  local _arg1="$1"
-  local _arg2="$2"
+  arg1="$1"
+  arg2="$2"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ "$_arg1" -ot "$_arg2" ]]'
+  condition="[[ '$arg1' -ot '$arg2' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -742,12 +752,12 @@ function cel_is_shell_option_enabled ()
     Example:
           ${FUNCNAME[0]} verbose
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -o "$_arg1" ]]'
+  condition="[[ -o '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -770,12 +780,12 @@ function cel_is_variable_set ()
     Example:
           ${FUNCNAME[0]} var_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -v "$_arg1" ]]'
+  condition="[[ -v '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -796,12 +806,12 @@ function cel_is_name_reference ()
     Example:
           ${FUNCNAME[0]} var_name
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -R "$_arg1" ]]'
+  condition="[[ -R '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -824,12 +834,12 @@ function cel_is_string_empty ()
     Example:
           ${FUNCNAME[0]} ''
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -z "$_arg1" ]]'
+  condition="[[ -z '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -850,12 +860,12 @@ function cel_is_string_non_empty ()
     Example:
           ${FUNCNAME[0]} hello
   "
-  local _arg1="$1"
+  arg1="$1"
 
   init_cel "$@"
   print_help "$HELP"
   
-  local condition='[[ -n "$_arg1" ]]'
+  condition="[[ -n '$arg1' ]]"
   [[ "${args["debug"]}" == "on" ]] && echo ">>> Condition: $condition"
   eval "$condition"
 }
@@ -877,6 +887,7 @@ function main ()
           -v, --verbose   display detailed help end exit
           -d, --debug     activate debugging
           -l, --list      list all functions
+          -t, --test      test all functions
           -c, --clear     remove all functions
 
     Exit status:
