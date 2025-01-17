@@ -19,7 +19,7 @@
 
 cp ./conditional_expressions_lib.sh ~/bin/
 cp ./conditional_expressions_lib_test.sh ~/bin/
-[ -L ~/bin/cel ] && unlink ~/bin/cel
+[ -L ~/bin/cel ] && rm ~/bin/cel
 [ -L ~/bin/celt ] && unlink ~/bin/celt
 ln -s ~/bin/conditional_expressions_lib.sh ~/bin/cel
 ln -s ~/bin/conditional_expressions_lib_test.sh ~/bin/celt
