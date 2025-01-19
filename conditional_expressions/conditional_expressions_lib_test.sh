@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # conditional_expressions_lib_test.sh
-# v1.0.1
+# v1.0.2
 # Changes:
-#   add ls -l checks
+#   add shopt -s inherit_errexit
 
 
 # Tests for Conditional Expressions Library
@@ -20,6 +20,7 @@
 [[ "$1" == "-ut" || "$1" == "--unit-tests" ]] && source ./conditional_expressions_lib.sh
 
 
+shopt -s inherit_errexit
 set -eE
 
 
@@ -651,6 +652,8 @@ function test_cel_is_file_newer()
   [ -f ~/my_file1 ] && rm ~/my_file1
   touch ~/my_file1
 
+  sleep 1
+
   [ -f ~/my_file2 ] && rm ~/my_file2
   touch ~/my_file2
 
@@ -673,6 +676,8 @@ function test_cel_is_file_older()
 
   [ -f ~/my_file1 ] && rm ~/my_file1
   touch ~/my_file1
+
+  sleep 1
 
   [ -f ~/my_file2 ] && rm ~/my_file2
   touch ~/my_file2
