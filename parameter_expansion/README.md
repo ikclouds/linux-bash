@@ -18,6 +18,7 @@
   - [${parameter,}](#parameter-3)
   - [${parameter,,}](#parameter-4)
   - [${parameter:offset}](#parameteroffset)
+  - [${parameter:offset:length}](#parameteroffsetlength)
 
 ## ${parameter:-word}
 
@@ -205,4 +206,15 @@ Extract a substring starting at offset.
 
 var="hello world"
 echo ${var:6}  # Output: world
+```
+
+## ${parameter:offset:length}
+
+Extract a substring starting at offset with a specified length.
+
+```bash
+# HACK: 18) ${parameter:offset:length}
+
+var="hello world"
+echo ${var:6:3}  # Output: wor
 ```
