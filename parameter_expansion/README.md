@@ -2,11 +2,9 @@
 
 - [Parameter Expansion](#parameter-expansion)
   - [${parameter:-word}](#parameter-word)
-  - [${parameter-word}](#parameter-word-1)
   - [${parameter:=word}](#parameterword)
-  - [${parameter=word}](#parameterword-1)
-  - [${parameter:?word}](#parameterword-2)
-  - [${parameter:+word}](#parameterword-3)
+  - [${parameter:?word}](#parameterword-1)
+  - [${parameter:+word}](#parameterword-2)
 
 ## ${parameter:-word}
 
@@ -19,39 +17,16 @@ var=""
 echo ${var:-"default"}  # Output: default
 ```
 
-## ${parameter-word}
-
-If parameter is **unset (but not null)**, use word as the default value.
-
-```bash
-# HACK: 2) ${parameter-word}
-
-unset var
-echo ${var-"default"}  # Output: default
-```
-
 ## ${parameter:=word}
 
 If parameter is unset or null, assign word to parameter and use it.
 
 ```bash
-# HACK: 3) ${parameter:=word}
+# HACK: 2) ${parameter:=word}
 
 unset var
 echo ${var:="default"}  # Output: default
 echo $var               # Output: default
-```
-
-## ${parameter=word}
-
-If parameter is unset (but not null), assign word to parameter and use it.
-
-```bash
-# HACK: 4) ${parameter=word}
-
-unset var
-echo ${var="default"}  # Output: default
-echo $var              # Output: default
 ```
 
 ## ${parameter:?word}
@@ -59,7 +34,7 @@ echo $var              # Output: default
 If parameter is unset or null, print word as an error and exit.
 
 ```bash
-# HACK: 5) ${parameter:?word}
+# HACK: 3) ${parameter:?word}
 
 unset var
 echo ${var:?"Error: var is unset or null"} # Exits with error message - echo $?
@@ -70,7 +45,7 @@ echo ${var:?"Error: var is unset or null"} # Exits with error message - echo $?
 If parameter is set and not null, use word; otherwise, use nothing.
 
 ```bash
-# HACK: 6) ${parameter:+word}
+# HACK: 4) ${parameter:+word}
 
 var="value"
 echo ${var:+"alternate"}  # Output: alternate
