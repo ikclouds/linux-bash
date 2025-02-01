@@ -21,6 +21,7 @@
   - [${parameter:offset:length}](#parameteroffsetlength)
   - [${!prefix}\*](#prefix)
   - [${!name\[@\]}](#name)
+  - [${parameter@operator}](#parameteroperator)
 
 ## ${parameter:-word}
 
@@ -242,4 +243,16 @@ Expand to the indices or keys of an array or associative array.
 
 arr=("a" "b" "c")
 echo ${!arr[@]}  # Output: 0 1 2
+```
+
+## ${parameter@operator}
+
+Apply a transformation to the value of parameter based on the operator.
+
+```bash
+# HACK: 21) ${parameter@operator}
+
+var="hello"
+echo ${var@U}  # Output: HELLO (uppercase)
+echo ${var@u}  # Output: Hello (capitalize first letter)
 ```
