@@ -5,6 +5,7 @@
   - [${parameter-word}](#parameter-word-1)
   - [${parameter:=word}](#parameterword)
   - [${parameter=word}](#parameterword-1)
+  - [${parameter:?word}](#parameterword-2)
 
 ## ${parameter:-word}
 
@@ -52,3 +53,13 @@ echo ${var="default"}  # Output: default
 echo $var              # Output: default
 ```
 
+## ${parameter:?word}
+
+If parameter is unset or null, print word as an error and exit.
+
+```bash
+# HACK: 5) ${parameter:?word}
+
+unset var
+echo ${var:?"Error: var is unset or null"} # Exits with error message - echo $?
+```
