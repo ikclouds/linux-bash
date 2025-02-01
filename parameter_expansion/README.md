@@ -16,6 +16,7 @@
   - [${parameter^}](#parameter-1)
   - [${parameter^^}](#parameter-2)
   - [${parameter,}](#parameter-3)
+  - [${parameter,,}](#parameter-4)
 
 ## ${parameter:-word}
 
@@ -181,4 +182,15 @@ Convert the first character of parameter to lowercase.
 
 var="HELLO"
 echo ${var,}  # Output: hELLO
+```
+
+## ${parameter,,}
+
+Convert all characters of parameter to lowercase.
+
+```bash
+# HACK: 16) ${parameter,,}
+
+var="HELLO"
+echo ${var,,}  # Output: hello
 ```
