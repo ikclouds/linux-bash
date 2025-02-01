@@ -10,6 +10,7 @@
   - [${parameter##word}](#parameterword-4)
   - [${parameter%word}](#parameterword-5)
   - [${parameter%%word}](#parameterword-6)
+  - [${parameter/pattern/string}](#parameterpatternstring)
 
 ## ${parameter:-word}
 
@@ -105,8 +106,19 @@ echo ${var%.*}  # Output: file
 Remove the longest match of word from the end of parameter.
 
 ```bash
-# HACK: 9) ${parameter%word}
+# HACK: 9) ${parameter%%word}
 
 var="file.txt.bak"
 echo ${var%%.*}  # Output: file
+```
+
+## ${parameter/pattern/string}
+
+Replace the first match of pattern with string.
+
+```bash
+# HACK: 10) ${parameter/pattern/string}
+
+var="hello world"
+echo ${var/hello/hi}  # Output: hi world
 ```
