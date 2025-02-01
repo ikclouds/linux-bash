@@ -57,7 +57,7 @@ echo ${var:+"alternate"}  # Output: alternate
 Get the length of the value of parameter.
 
 ```bash
-# HACK: 5) $#parameter
+# HACK: 5) ${#parameter}
 
 var="hello"
 echo ${#var}  # Output: 5
