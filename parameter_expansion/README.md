@@ -5,6 +5,7 @@
   - [${parameter:=word}](#parameterword)
   - [${parameter:?word}](#parameterword-1)
   - [${parameter:+word}](#parameterword-2)
+  - [${#parameter}](#parameter)
 
 ## ${parameter:-word}
 
@@ -49,4 +50,15 @@ If parameter is set and not null, use word; otherwise, use nothing.
 
 var="value"
 echo ${var:+"alternate"}  # Output: alternate
+```
+
+## ${#parameter}
+
+Get the length of the value of parameter.
+
+```bash
+# HACK: 5) ${#parameter}
+
+var="hello"
+echo ${#var}  # Output: 5
 ```
