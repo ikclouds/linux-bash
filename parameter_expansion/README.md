@@ -3,6 +3,7 @@
 - [Parameter Expansion](#parameter-expansion)
   - [${parameter:-word}](#parameter-word)
   - [${parameter-word}](#parameter-word-1)
+  - [${parameter:=word}](#parameterword)
 
 ## ${parameter:-word}
 
@@ -24,4 +25,16 @@ If parameter is **unset (but not null)**, use word as the default value.
 
 unset var
 echo ${var-"default"}  # Output: default
+```
+
+## ${parameter:=word}
+
+If parameter is unset or null, assign word to parameter and use it.
+
+```bash
+# HACK: 3) ${parameter:=word}
+
+unset var
+echo ${var:="default"}  # Output: default
+echo $var               # Output: default
 ```
