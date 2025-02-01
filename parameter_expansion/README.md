@@ -6,6 +6,7 @@
   - [${parameter:?word}](#parameterword-1)
   - [${parameter:+word}](#parameterword-2)
   - [${#parameter}](#parameter)
+  - [${parameter#word}](#parameterword-3)
 
 ## ${parameter:-word}
 
@@ -61,4 +62,15 @@ Get the length of the value of parameter.
 
 var="hello"
 echo ${#var}  # Output: 5
+```
+
+## ${parameter#word}
+
+Remove the shortest match of word from the beginning of parameter.
+
+```bash
+# HACK: 6) ${parameter#word}
+
+var="file.txt"
+echo ${var#file}  # Output: .txt
 ```
