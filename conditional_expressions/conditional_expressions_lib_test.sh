@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # conditional_expressions_lib_test.sh
-# v1.0.2
+# v1.0.3
 # Changes:
-#   add shopt -s inherit_errexit
+#   v1.0.3 celt fix problems
 
 
 # Tests for Conditional Expressions Library
@@ -382,17 +382,17 @@ function test_cel_is_setuid_file ()
   touch ~/"$test_file"
 
   chmod u+s ~/"$test_file"
-  cel_is_setuid_file ~/"$test_file" && echo "~/$test_file has set-uid" || echo "~/$test_file has NO set-uid"
+  cel_is_setuid_file ~/"$test_file" && echo "$test_file has set-uid" || echo "$test_file has NO set-uid"
   ls -l ~/"$test_file"
   echo "$condition"
 
   chmod u+x ~/"$test_file"
-  cel_is_setuid_file ~/"$test_file" && echo "~/$test_file has set-uid" || echo "~/$test_file has NO set-uid"
+  cel_is_setuid_file ~/"$test_file" && echo "$test_file has set-uid" || echo "$test_file has NO set-uid"
   ls -l ~/"$test_file"
   echo "$condition"
 
   chmod u-s ~/"$test_file"
-  cel_is_setuid_file ~/"$test_file" && echo "~/$test_file has set-uid" || echo "~/$test_file has NO set-uid"
+  cel_is_setuid_file ~/"$test_file" && echo "$test_file has set-uid" || echo "$test_file has NO set-uid"
   ls -l ~/"$test_file"
   echo "$condition"
 
@@ -724,14 +724,17 @@ function test_cel_is_variable_set()
   cel_is_variable_set not_declared_variable1 && echo "set" || echo "not set"
   echo "$condition"
 
+  # shellcheck disable=SC2034
   declare -i declared_variable2
   cel_is_variable_set declared_variable2 && echo "set" || echo "not set"
   echo "$condition"
   
+  # shellcheck disable=SC2034
   declare declared_variable3=""
   cel_is_variable_set declared_variable3 && echo "set" || echo "not set"
   echo "$condition"
 
+  # shellcheck disable=SC2034
   declared_variable4="a"
   cel_is_variable_set declared_variable4 && echo "set" || echo "not set"
   echo "$condition"
