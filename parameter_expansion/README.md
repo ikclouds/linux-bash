@@ -17,6 +17,7 @@
   - [${parameter^^}](#parameter-2)
   - [${parameter,}](#parameter-3)
   - [${parameter,,}](#parameter-4)
+  - [${parameter:offset}](#parameteroffset)
 
 ## ${parameter:-word}
 
@@ -193,4 +194,15 @@ Convert all characters of parameter to lowercase.
 
 var="HELLO"
 echo ${var,,}  # Output: hello
+```
+
+## ${parameter:offset}
+
+Extract a substring starting at offset.
+
+```bash
+# HACK: 17) ${parameter:offset}
+
+var="hello world"
+echo ${var:6}  # Output: world
 ```
