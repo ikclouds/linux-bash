@@ -8,6 +8,7 @@
   - [${parameter:?word}](#parameterword-2)
   - [${parameter?word}](#parameterword-3)
   - [${parameter:+word}](#parameterword-4)
+  - [${parameter+word}](#parameterword-5)
 
 ## ${parameter:-word}
 
@@ -86,4 +87,15 @@ If parameter is set and not null, use word; otherwise, use nothing.
 
 var="value"
 echo ${var:+"alternate"}  # Output: alternate
+```
+
+## ${parameter+word}
+
+If parameter is set (even if null), use word; otherwise, use nothing.
+
+```bash
+# HACK: ${parameter+word}
+
+var=""
+echo ${var+"alternate"}  # Output: alternate
 ```
