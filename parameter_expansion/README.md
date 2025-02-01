@@ -19,6 +19,8 @@
   - [${parameter,,}](#parameter-4)
   - [${parameter:offset}](#parameteroffset)
   - [${parameter:offset:length}](#parameteroffsetlength)
+  - [${!prefix}\*](#prefix)
+  - [${!name\[@\]}](#name)
 
 ## ${parameter:-word}
 
@@ -217,4 +219,27 @@ Extract a substring starting at offset with a specified length.
 
 var="hello world"
 echo ${var:6:3}  # Output: wor
+```
+
+## ${!prefix}*
+
+Expand to the names of variables with the specified prefix.
+
+```bash
+# HACK: 19) ${!prefix}*
+
+foo1="a"
+foo2="b"
+echo ${!foo*}  # Output: foo1 foo2
+```
+
+## ${!name[@]}
+
+Expand to the indices or keys of an array or associative array.
+
+```bash
+# HACK: 20) ${!name[@]}
+
+arr=("a" "b" "c")
+echo ${!arr[@]}  # Output: 0 1 2
 ```
