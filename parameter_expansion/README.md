@@ -13,6 +13,7 @@
   - [${parameter/pattern/string}](#parameterpatternstring)
   - [${parameter/#pattern/string}](#parameterpatternstring-1)
   - [${parameter/%pattern/string}](#parameterpatternstring-2)
+  - [${parameter^}](#parameter-1)
 
 ## ${parameter:-word}
 
@@ -145,4 +146,15 @@ Replace pattern with string only if it matches at the end of parameter.
 
 var="hello world"
 echo ${var/%world/earth}  # Output: hello earth
+```
+
+## ${parameter^}
+
+Convert the first character of parameter to uppercase.
+
+```bash
+# HACK: 13) ${parameter^}
+
+var="hello"
+echo ${var^}  # Output: Hello
 ```
