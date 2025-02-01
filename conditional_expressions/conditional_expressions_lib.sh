@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # conditional_expressions_lib.sh
-# v1.0.1
+# v1.0.2
 # Changes:
-#   cel_is_string_empty bug fixed
+#   v1.0.2 cel  help bugfix
 
 # Conditional Expressions Library
 
@@ -15,18 +15,18 @@
 #   declare -F | grep cel
 
 
-shopt -s inherit_errexit
-set -eE
+# set -eE
+# shopt -s inherit_errexit
+
 
 declare LIB_NAME    # library name
 declare condition   # conditional expression
 declare arg1        # argument 1 in conditional expression
 declare arg1        # argument 2 in conditional expression
 
-# Exit code for -h,--help option in the Conditional Expression LIBrary
+# Exit code for -h,--help option in the Conditional Expression Library
 declare LIB_TEST="conditional_expressions_lib_test.sh"
 declare NON_EXPRESSION_FUNC="main|init_cel|print_help|_exit_ok|clear_args|test_all_lib"
-declare -i CELIB_HELP_EXIT=128
 declare ARGS
 declare -A args=(["help"]="off" ["verbose"]="off" ["usage"]="off" ["list"]="off" ["clear"]="off" ["debug"]="off" ["test"]="off")
 declare COMMON_OPTIONS="
@@ -73,15 +73,11 @@ function print_help ()
 {
   local HELP_MSG="$1"
 
-  [[ "${args["help"]}" == "on" ]] \
-    && { echo -e "${HELP_MSG}"; return "$CELIB_HELP_EXIT"; }
+  [[ "${args["help"]}" == "on" ]]  && { echo -e "${HELP_MSG}"; } || true
 
-  [[ "${args["usage"]}" == "on" ]] \
-    && { echo -e "${HELP_MSG}" | sed -n "1p"; return "$CELIB_HELP_EXIT"; }
+  [[ "${args["usage"]}" == "on" ]] && { echo -e "${HELP_MSG}" | sed -n "1p"; } || true
 
-  [[ "${args["verbose"]}" == "on" ]] \
-    && { echo -e "${HELP_MSG}" | sed -n "2,3p"; return "$CELIB_HELP_EXIT"; }
-  
+  [[ "${args["verbose"]}" == "on" ]] && { echo -e "${HELP_MSG}" | sed -n "2p"; } || true
 }
 
 
@@ -89,18 +85,22 @@ function test_all_lib ()
 {
   local _continue
   local _debug="${args["debug"]}"
+  local _func
 
   if [[ "$LIB_NAME" != "-bash" ]]; then
     [[ "$0" != "-bash" ]] && source ./${LIB_TEST}
 
     for func_name in $(grep "function.*()" "$LIB_NAME" | grep -vE "$NON_EXPRESSION_FUNC" | cut -d' ' -f2 | grep -v "^$"); do
-      [ "$_debug" == "on" ] \
-        && eval "test_$func_name" \
-        || eval "test_$func_name &> /dev/null"
-    
-      if [ $? = 0 ] ; then echo "test_$func_name ... Ok"; else echo "test_$func_name ... Error"; fi
+      if [ "$_debug" == "on" ]; then
+        _func="test_$func_name"
+      else
+        _func="test_$func_name &> /dev/null"
+      fi
+
+      eval "$_func" && echo "test_$func_name ... Ok" || echo "test_$func_name ... Error"
+
       [ "$_debug" == "on" ] && { echo "---"; read -r -p "Continue (y/n): " _continue; }
-      [ "$_continue" = "n" ] && return
+      [ "$_continue" = "n" ] && break
     done
   fi
 }
@@ -423,7 +423,7 @@ function cel_is_not_empty_file ()
 function cel_is_fd_terminal ()
 {
   local HELP="Usage: ${FUNCNAME[0]} FILE_DESCRIPTOR [OPTIONS]
-    -t fd  
+    -t file  
               True if file descriptor fd is open and refers to a terminal.
 
     Options:
@@ -883,12 +883,12 @@ function main ()
 
     Options:
           no OPTIONS      load functions
-          -h, --help      display option description end exit
-          -v, --verbose   display detailed help end exit
+          -c, --clear     remove all functions
           -d, --debug     activate debugging
+          -h, --help      display option description end exit
           -l, --list      list all functions
           -t, --test      test all functions
-          -c, --clear     remove all functions
+          -v, --verbose   display detailed help end exit
 
     Exit status:
           0   the library loaded without errors
@@ -906,7 +906,7 @@ function main ()
   [[ "${args["clear"]}" == "on" ]] \
     && for func in $(declare -F | grep -o -E "cel\_.*|init_cel"); do unset "$func"; done
 
-  [[ "${args["test"]}" == "on" ]] && test_all_lib "$@"
+  [[ "${args["test"]}" == "on" ]] && test_all_lib "${ARGS[@]}"
 
   if [[ "$LIB_NAME" != "-bash" ]]; then
     grep "function.*()" "$LIB_NAME" | grep -vE "$NON_EXPRESSION_FUNC" | cut -d' ' -f2 | grep -v "^$" | \
