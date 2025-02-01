@@ -8,6 +8,7 @@
   - [${#parameter}](#parameter)
   - [${parameter#word}](#parameterword-3)
   - [${parameter##word}](#parameterword-4)
+  - [${parameter%word}](#parameterword-5)
 
 ## ${parameter:-word}
 
@@ -85,4 +86,15 @@ Remove the longest match of word from the beginning of parameter.
 
 var="file.txt.bak"
 echo ${var##*.}  # Output: bak
+```
+
+## ${parameter%word}
+
+Remove the shortest match of word from the end of parameter.
+
+```bash
+# HACK: 8) ${parameter%word}
+
+var="file.txt"
+echo ${var%.*}  # Output: file
 ```
