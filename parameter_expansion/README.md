@@ -219,7 +219,13 @@ Extract a substring starting at offset with a specified length.
 # HACK: 18) ${parameter:offset:length}
 
 var="hello world"
-echo ${var:6:3}  # Output: wor
+echo ${var:6:3}       # Output: wor
+echo ${var: -2}       # Output: ld
+echo ${var: -2:1}     # Output: l
+echo ${var: -4:-3}    # Output: o
+echo ${var: -4:-2}    # Output: or
+array[0]=01234567890abcdefgh
+echo ${array[0]:7:2}  # 78
 ```
 
 ## ${!prefix}*
@@ -255,4 +261,16 @@ Apply a transformation to the value of parameter based on the operator.
 var="hello"
 echo ${var@U}  # Output: HELLO (uppercase)
 echo ${var@u}  # Output: Hello (capitalize first letter)
+
+var="HEllo"
+echo ${var@L}  # Output: hello
+
+declare -r var="Hello"
+echo ${var@a}  # Output: r (read-only attribute)
+
+var="Hello World"
+echo ${var@A}  # Output: var='Hello World'
+
+var="\u@\h"
+echo ${var@P}
 ```
